@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { about } from "@/data/about";
 
 // ── Letter / Word helpers ─────────────────────────────────────────────────────
 
@@ -28,16 +29,18 @@ function Word({ word, accent = false }: { word: string; accent?: boolean }) {
 export default function Home() {
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div className="stage">
-        {/* Mesh gradient — blobs share one filter on the .mesh container */}
-        <div className="mesh">
+      {/* ── Shared background wrapper — hero + about share one mesh ──────── */}
+      <div className="relative overflow-hidden">
+        {/* Single mesh gradient spanning both sections */}
+        <div className="mesh" style={{ position: "absolute", inset: 0, height: "100%", zIndex: 0 }}>
           <div className="blob b1" />
           <div className="blob b2" />
           <div className="blob b3" />
           <div className="blob b4" />
         </div>
 
+        {/* ── Hero ────────────────────────────────────────────────────────── */}
+        <div className="stage" style={{ position: "relative", zIndex: 1 }}>
         {/* Grain texture */}
         <div className="grain" aria-hidden="true" />
 
@@ -80,12 +83,86 @@ export default function Home() {
             prevent disease.
           </p>
 
-          <Link href="/research" className="hero-cta">
-            Explore research at LaBL
+          <Link
+            href="/research"
+            className="inline-block text-lg font-semibold text-navy border-b-2 border-baby-blue pb-0.5 hover:text-navy/70 transition-colors duration-150"
+            style={{ fontFamily: "var(--font-bricolage)" }}
+          >
+            Explore research at LaBL →
           </Link>
         </div>
 
-      </div>
+        </div>{/* end .stage */}
+
+        {/* ── Partner logo marquee strip ───────────────────────────────────── */}
+        <div className="relative z-10 w-full pt-2 pb-5 overflow-hidden">
+          <div className="marquee-track">
+            {/* First copy */}
+            {about.partnerLogos.map((logo) => (
+              <div key={`a-${logo.src}`} className="flex-shrink-0 mx-10 flex items-center">
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={logo.width}
+                  height={logo.height}
+                  className="h-8 w-auto object-contain opacity-50"
+                />
+              </div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {about.partnerLogos.map((logo) => (
+              <div key={`b-${logo.src}`} className="flex-shrink-0 mx-10 flex items-center">
+                <Image
+                  src={logo.src}
+                  alt=""
+                  aria-hidden="true"
+                  width={logo.width}
+                  height={logo.height}
+                  className="h-8 w-auto object-contain opacity-50"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── About Our Lab — same background, no seam ────────────────────── */}
+        <section className="relative z-10 max-w-3xl mx-auto px-8 md:px-12 pt-10 pb-24 text-center">
+        <h2
+          className="text-4xl md:text-5xl font-bold mb-4"
+          style={{ fontFamily: "var(--font-bricolage)", color: "#20232B" }}
+        >
+          {about.heading}
+        </h2>
+        <p
+          className="text-lg font-semibold text-navy/70 mb-8"
+          style={{ fontFamily: "var(--font-bricolage)" }}
+        >
+          {about.tagline}
+        </p>
+
+        {about.paragraphs.map((p, i) => (
+          <p key={i} className="text-base text-navy/70 leading-relaxed mb-5 text-left">
+            {p}
+          </p>
+        ))}
+
+        <div className="border-l-4 border-baby-blue pl-5 mt-8 mb-8 text-left">
+          <p className="text-base text-navy leading-relaxed">
+            <strong>{about.callout.bold}</strong>{" "}
+            {about.callout.text}
+          </p>
+        </div>
+
+        <Link
+          href={about.learnMoreHref}
+          className="inline-block text-lg font-semibold text-navy border-b-2 border-baby-blue pb-0.5 hover:text-navy/70 transition-colors duration-150"
+          style={{ fontFamily: "var(--font-bricolage)" }}
+        >
+          Learn more →
+        </Link>
+
+      </section>
+      </div>{/* end shared background wrapper */}
     </>
   );
 }

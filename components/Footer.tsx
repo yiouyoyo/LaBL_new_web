@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <p className="text-xs text-baby-blue/30">
+        <p className="text-xs text-coral/60">
           © {new Date().getFullYear()} Language Biomarker Lab, Emory University
         </p>
 
