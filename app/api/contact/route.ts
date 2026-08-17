@@ -14,8 +14,6 @@ const RECIPIENT_EMAIL = "pwolff@emory.edu"; // ← change to real lab manager em
 const SENDER_ADDRESS = "LaBL Contact Form <onboarding@resend.dev>"; // ← update once domain is verified
 // ─────────────────────────────────────────────────────────────────────────
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
   try {
     const { firstName, lastName, email, message } = await req.json();
@@ -24,6 +22,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
     }
 
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Email service not configured." }, { status: 503 });
+    }
+
+    const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from: SENDER_ADDRESS,
       to: RECIPIENT_EMAIL,
